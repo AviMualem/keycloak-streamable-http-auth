@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: oauth-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: dev-mem  # In-memory database for simplicity
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - ./docker/keycloak/realm-config.json:/opt/keycloak/data/import/realm-config.json:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - oauth-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/realms/demo/.well-known/openid-configuration || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  nginx:
+    image: nginx:alpine
+    container_name: oauth-proxy
+    ports:
+      - "9090:80"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - oauth-network
+    depends_on:
+      - keycloak
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/nginx-health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+networks:
+  oauth-network:
+    driver: bridge 
