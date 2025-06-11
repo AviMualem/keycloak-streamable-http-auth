@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug TS File",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${file}"],
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "env": {
+        "NODE_OPTIONS": "--no-warnings"
+      }
+    }
+  ]
+} 

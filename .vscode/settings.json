@@ -1,0 +1,8 @@
+{
+  "debug.console.acceptSuggestionOnEnter": "off",
+  "debug.console.fontSize": 13,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  }
+} 
